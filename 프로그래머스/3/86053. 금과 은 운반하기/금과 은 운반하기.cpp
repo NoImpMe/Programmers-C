@@ -20,7 +20,7 @@ bool check(long long time){
 long long solution(int a, int b, vector<int> g, vector<int> s, vector<int> w, vector<int> t) {
     long long answer = -1;
     long long start = 0;
-    long long end = 4 * pow(10,14);
+    long long end = 4 * pow(10,14) ;
     
     while( start < end){
         long long mid = (start + end) / 2;
@@ -37,12 +37,15 @@ long long solution(int a, int b, vector<int> g, vector<int> s, vector<int> w, ve
             total += min(sum, g[i] + s[i]);
             totalA += min(sum, g[i]);
             totalB += min(sum, s[i]);
-            if(total >= a+b && totalA >= a && total >= b) check = true;
+            if(total >= a+b && totalA >= a && totalB >= b) check = true;
         }
         if(check){
             end = mid;
         }
-        else start = mid + 1;
+        else {
+            start = mid + 1;
+        }
+        
     }
     answer = start;
     
