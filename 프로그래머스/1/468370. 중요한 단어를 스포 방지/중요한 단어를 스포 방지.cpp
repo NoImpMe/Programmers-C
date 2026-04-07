@@ -1,44 +1,43 @@
 #include <string>
 #include <vector>
-#include <unordered_set>
 #include <sstream>
+#include <unordered_set>
 using namespace std;
-struct word{
+struct Word{
     string text;
     int start;
     int end;
-    bool hided;
+    bool spoiled;
 };
 int solution(string message, vector<vector<int>> spoiler_ranges) {
     int answer = 0;
-    unordered_set<string> unhided;
-    vector<word> words;
     istringstream iss(message);
-    int idx = 0;
     string tmp;
+    vector<Word> words;
+    unordered_set<string> unhided;
+    int idx = 0;
     while(iss >> tmp){
         int pos = message.find(tmp, idx);
         words.push_back({tmp, pos, pos+(int)tmp.size()-1, false});
-        idx = pos + (int)tmp.size();
+        idx = pos + (int)tmp.size() - 1;
     }
-    int n = spoiler_ranges.size();
-    for(auto& wd : words){
-        for(auto range : spoiler_ranges){
-            if(max(wd.start,range[0]) <= min(wd.end, range[1])){
-                wd.hided = true;
+    for(auto& word : words){
+        for(auto s : spoiler_ranges){
+            if(max(word.start,s[0]) <= min(word.end, s[1])){
+                word.spoiled = true;
             }
         }
-        if(!wd.hided) unhided.insert(wd.text);
-    }
-    unordered_set<string> discovered;
-    for(auto wd : words){
-        if(wd.hided){
-            if((unhided.find(wd.text) == unhided.end()) && (discovered.find(wd.text) == discovered.end())){
-                answer += 1;
-            }
-            discovered.insert(wd.text);
+        if(!word.spoiled){
+            unhided.insert(word.text);        
         }
     }
-    
+    for(auto word : words){
+        if(word.spoiled){
+            if(unhided.find(word.text) == unhided.end()){
+                answer++;
+            }
+            unhided.insert(word.text);
+        }
+    }
     return answer;
 }
